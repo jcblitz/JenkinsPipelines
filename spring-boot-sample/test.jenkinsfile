@@ -1,0 +1,38 @@
+pipeline {
+    agent any
+      parameters {
+        string(name: 'buildVersion', description: 'Which version to deploy?')
+    }
+    stages {
+        stage('Retrieving Artifact') {
+            steps {
+                script {
+                    if (!params.buildVersion?.trim()) {
+                        echo "Using last stable release"
+                        copyArtifacts(projectName: 'spring-boot-example', filter: 'target/spring-boot-sample.war');        
+                    } else {
+                        echo "Using release ${params.buildVersion}"
+                        copyArtifacts(projectName: 'spring-boot-example', selector: specific("${buildVersion}"), filter: 'target/spring-boot-sample.war');        
+                    }
+                }
+            }
+        }
+        stage('Deploy to Test') {
+            steps {
+                echo 'Doing deploy'
+            }
+        }
+
+        stage('Execute Smoke Tests') {
+            steps {
+                echo 'Running basic smoke tests'
+            }
+        }
+
+        stage('Execute Integration Tests') {
+            steps {
+                echo 'Running full suite'
+            }
+        }
+    }
+}
