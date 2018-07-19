@@ -1,7 +1,7 @@
 pipeline {
     agent any
       parameters {
-        string(name: 'buildVersion', description: 'Which version to deploy?')
+        string(name: 'buildVersion', description: 'Which version to deploy?', defaultValue: '')
     }
     stages {
         stage('Retrieving Artifact') {
